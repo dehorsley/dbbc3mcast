@@ -1,4 +1,4 @@
-package main
+package dbbc3mcast
 
 import "encoding/json"
 
