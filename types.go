@@ -17,13 +17,17 @@ type (
 		Frequency   uint16 // MHz
 	}
 
-	BitStatistics struct {
+	BitStatistics32 struct {
 		Pattern [4]uint32 // 00, 01, 10, 11
+	}
+
+	BitStatistics16 struct {
+		Pattern [4]uint16 // 00, 01, 10, 11
 	}
 
 	Adb3l struct {
 		TotalPower       [4]uint32
-		BitStatistics    [4]BitStatistics
+		BitStatistics    [4]BitStatistics32
 		DelayCorrelation [3]int32 // S0-S1, S1-S2, S2-S3, TODO: is this type right
 	}
 
@@ -46,7 +50,11 @@ type (
 		TotalPowerLSBCalOn  uint32
 		TotalPowerUSBCalOff uint32
 		TotalPowerLSBCalOff uint32
-		BitStatistics       BitStatistics
+		BitStatistics       BitStatistics16
+		TsysUSB             uint16
+		TsysLSB             uint16
+		SEFDUSB             uint16
+		SEFDLSB             uint16
 	}
 
 	Dbbc3DdcMulticast struct {
