@@ -36,23 +36,30 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 
 		expectedSize := binary.Size(pack)
 
+	Loop:
 		for {
-			n, err := conn.Read(buf)
-			if err != nil {
-				// TODO backoff
-				continue
-			}
+			select {
+			case <-done:
+				break Loop
+			default:
+				n, err := conn.Read(buf)
+				if err != nil {
+					// TODO backoff
+					continue
+				}
 
-			if n < expectedSize {
-				continue
-			}
+				if n < expectedSize {
+					// TODO: handle error?
+					continue
+				}
 
-			reader := bytes.NewReader(buf)
-			err = binary.Read(reader, binary.LittleEndian, &pack)
-			if err != nil {
-				continue
+				reader := bytes.NewReader(buf)
+				err = binary.Read(reader, binary.LittleEndian, &pack)
+				if err != nil {
+					continue
+				}
+				vals <- pack
 			}
-			vals <- pack
 		}
 	}()
 
