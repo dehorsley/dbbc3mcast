@@ -1,8 +1,6 @@
 package dbbc3mcast
 
 import (
-	"bytes"
-	"encoding/binary"
 	"fmt"
 	"net"
 	"strings"
@@ -74,9 +72,9 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 					continue
 				}
 
-				reader := bytes.NewReader(buf)
-				err = binary.Read(reader, binary.LittleEndian, &msg)
+				err = msg.UnmarshalBinary(buf)
 				if err != nil {
+					fmt.Println("error unpacking msg:", err)
 					continue
 				}
 				vals <- msg
