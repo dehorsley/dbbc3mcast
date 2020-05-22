@@ -112,10 +112,10 @@ func (c Core3hRaw) Cook() Core3h {
 
 func (b BbcRaw) Cook() Bbc {
 	bits := make(map[string]uint32)
-
 	for j := range b.BitStatistics.Pattern {
 		bits[fmt.Sprintf("%02b", j)] = uint32(b.BitStatistics.Pattern[j])
 	}
+
 	return Bbc{
 		Frequency:           float64(b.Frequency) / 524288,
 		Bandwidth:           b.Bandwidth,

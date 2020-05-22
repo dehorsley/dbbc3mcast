@@ -93,8 +93,8 @@ func (a Adb3lRaw) Cook() Adb3l {
 	bits := make([]map[string]uint32, len(a.BitStatistics))
 
 	for i, bs := range a.BitStatistics {
+		bits[i] = make(map[string]uint32)
 		for j := range bs.Pattern {
-			bits[i] = make(map[string]uint32)
 			bits[i][fmt.Sprintf("%02b", j)] = bs.Pattern[j]
 		}
 
