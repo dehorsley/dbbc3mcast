@@ -5,6 +5,7 @@ import (
 	"encoding/binary"
 	"fmt"
 	"net"
+	"strings"
 
 	"github.com/dehorsley/dbbc3mcast/versions"
 	_ "github.com/dehorsley/dbbc3mcast/versions/all"
@@ -61,9 +62,16 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 				}
 				packetVersion := cstr(buf[0:32])
 
-				msg, ok := versions.Messages[packetVersion]
+				fields := strings.Split(packetVersion, ",")
+				if len(fields) != 3 {
+					fmt.Println("unsupported version", packetVersion)
+					continue
+				}
+
+				msg, ok := versions.Messages[strings.Join(fields[0:2], ",")]
 				if !ok {
 					fmt.Println("unsupported version", packetVersion)
+					continue
 				}
 
 				expectedSize := binary.Size(&msg)
