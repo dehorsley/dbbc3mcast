@@ -66,9 +66,7 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 					fmt.Println("unsupported version", packetVersion)
 				}
 
-				// pack :=
-				//
-				expectedSize := binary.Size(msg)
+				expectedSize := binary.Size(&msg)
 
 				if n < expectedSize {
 					// TODO: handle error?
