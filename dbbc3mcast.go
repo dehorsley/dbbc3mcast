@@ -3,19 +3,34 @@ package dbbc3mcast
 import (
 	"bytes"
 	"encoding/binary"
+	"fmt"
 	"net"
+
+	"github.com/dehorsley/dbbc3mcast/versions"
+	_ "github.com/dehorsley/dbbc3mcast/versions/all"
 )
+
+func cstr(str []byte) string {
+	for n, b := range str {
+		if b == 0 {
+			return string(str[:n])
+		}
+	}
+	return string(str)
+}
 
 const UDP_MAX_PACKET_SIZE = 64 * 1024
 
+type DbbcMessage = versions.DbbcMessage
+
 type dbbc3DDCMulticastListener struct {
-	vals chan Dbbc3DdcMulticast
+	vals chan DbbcMessage
 	done chan struct{}
 }
 
 func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 	done := make(chan struct{})
-	vals := make(chan Dbbc3DdcMulticast)
+	vals := make(chan DbbcMessage)
 
 	addr, err := net.ResolveUDPAddr("udp", groupAddress)
 	if err != nil {
@@ -32,9 +47,6 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 		defer conn.Close()
 
 		buf := make([]byte, UDP_MAX_PACKET_SIZE)
-		pack := Dbbc3DdcMulticast{}
-
-		expectedSize := binary.Size(pack)
 
 	Loop:
 		for {
@@ -47,6 +59,16 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 					// TODO backoff
 					continue
 				}
+				packetVersion := cstr(buf[0:32])
+
+				msg, ok := versions.Messages[packetVersion]
+				if !ok {
+					fmt.Println("unsupported version", packetVersion)
+				}
+
+				// pack :=
+				//
+				expectedSize := binary.Size(msg)
 
 				if n < expectedSize {
 					// TODO: handle error?
@@ -54,11 +76,11 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 				}
 
 				reader := bytes.NewReader(buf)
-				err = binary.Read(reader, binary.LittleEndian, &pack)
+				err = binary.Read(reader, binary.LittleEndian, &msg)
 				if err != nil {
 					continue
 				}
-				vals <- pack
+				vals <- msg
 			}
 		}
 	}()
@@ -73,6 +95,6 @@ func (l *dbbc3DDCMulticastListener) Stop() {
 	close(l.done)
 }
 
-func (l *dbbc3DDCMulticastListener) Values() chan Dbbc3DdcMulticast {
+func (l *dbbc3DDCMulticastListener) Values() chan DbbcMessage {
 	return l.vals
 }
