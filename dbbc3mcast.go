@@ -55,7 +55,7 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 			case <-done:
 				break Loop
 			default:
-				n, err := conn.Read(buf)
+				_, err := conn.Read(buf)
 				if err != nil {
 					// TODO backoff
 					continue
@@ -71,13 +71,6 @@ func New(groupAddress string) (*dbbc3DDCMulticastListener, error) {
 				msg, ok := versions.Messages[strings.Join(fields[0:2], ",")]
 				if !ok {
 					fmt.Println("unsupported version", packetVersion)
-					continue
-				}
-
-				expectedSize := binary.Size(&msg)
-
-				if n < expectedSize {
-					// TODO: handle error?
 					continue
 				}
 
