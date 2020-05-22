@@ -225,7 +225,7 @@ func (d *Dbbc3DdcMulticast) UnmarshalBinary(buf []byte) error {
 	var dRaw Dbbc3DdcMulticastRaw
 
 	reader := bytes.NewReader(buf)
-	err := binary.Read(reader, binary.LittleEndian, dRaw)
+	err := binary.Read(reader, binary.LittleEndian, &dRaw)
 	if err != nil {
 		return err
 	}
