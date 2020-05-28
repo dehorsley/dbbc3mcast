@@ -130,51 +130,51 @@ func (b BbcRaw) Cook() Bbc {
 
 type (
 	Gcomo struct {
-		Agc         bool    // 0 = manual, 1 = agc on
-		Attenuation float64 // 0-63 (0.5 dB steps)
-		Power       uint16  // 0-65535
-		TargetPower uint16  // 0-65535 target for AGC
+		Agc         bool    `json:"agc"`          // 0 = manual, 1 = agc on
+		Attenuation float64 `json:"attenuation"`  // 0-63 (0.5 dB steps)
+		Power       uint16  `json:"power"`        // 0-65535
+		TargetPower uint16  `json:"target_power"` // 0-65535 target for AGC
 	}
 
 	Downconverter struct {
-		Enabled     bool    // 1 == output off, 2 = output on
-		Locked      bool    // 0 == no lock, 1 = lock
-		Attenuation float64 // 0-31 in dB
-		Frequency   float64 // MHz
+		Enabled     bool    `json:"enabled"`     // 1 == output off, 2 = output on
+		Locked      bool    `json:"locked"`      // 0 == no lock, 1 = lock
+		Attenuation float64 `json:"attenuation"` // 0-31 in dB
+		Frequency   float64 `json:"frequency"`   // MHz
 	}
 
 	Adb3l struct {
-		TotalPower       []uint32
-		BitStatistics    []map[string]uint32
-		DelayCorrelation []int32
+		TotalPower       []uint32            `json:"total_power"`
+		BitStatistics    []map[string]uint32 `json:"bit_statistics"`
+		DelayCorrelation []int32             `json:"delay_correlation"`
 	}
 
 	Core3h struct {
-		Timestamp        uint32 // VDIF timestamp
-		PpsDelay         uint32 // in ns
-		TotalPowerCalOn  uint32
-		TotalPowerCalOff uint32
+		Timestamp        uint32 `json:"timestamp"` // VDIF timestamp
+		PpsDelay         uint32 `json:"pps_delay"` // in ns
+		TotalPowerCalOn  uint32 `json:"total_power_cal_on"`
+		TotalPowerCalOff uint32 `json:"total_power_cal_off"`
 	}
 
 	Bbc struct {
-		Frequency           float64
-		Bandwidth           uint8
-		Agc                 uint8
-		GainUSB             uint8
-		GainLSB             uint8
-		TotalPowerUSBCalOn  uint32
-		TotalPowerLSBCalOn  uint32
-		TotalPowerUSBCalOff uint32
-		TotalPowerLSBCalOff uint32
+		Frequency           float64 `json:"frequency"`
+		Bandwidth           uint8   `json:"bandwidth"`
+		Agc                 uint8   `json:"agc"`
+		GainUSB             uint8   `json:"gain_usb"`
+		GainLSB             uint8   `json:"gain_lsb"`
+		TotalPowerUSBCalOn  uint32  `json:"total_power_usb_cal_on"`
+		TotalPowerLSBCalOn  uint32  `json:"total_power_lsb_cal_on"`
+		TotalPowerUSBCalOff uint32  `json:"total_power_usb_cal_off"`
+		TotalPowerLSBCalOff uint32  `json:"total_power_lsb_cal_off"`
 	}
 
 	Dbbc3DdcMulticast struct {
-		Version       string
-		Gcomo         []Gcomo
-		Downconverter []Downconverter
-		Adb3l         []Adb3l
-		Core3h        []Core3h
-		Bbc           []Bbc
+		Version       string          `json:"version"`
+		Gcomo         []Gcomo         `json:"gcomo"`
+		Downconverter []Downconverter `json:"downconverter"`
+		Adb3l         []Adb3l         `json:"adb3l"`
+		Core3h        []Core3h        `json:"core3h"`
+		Bbc           []Bbc           `json:"bbc"`
 	}
 )
 
