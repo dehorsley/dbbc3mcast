@@ -17,7 +17,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	for p := range l.Values() {
+	for {
+		p, err := l.Next()
+		if err != nil {
+			break
+		}
 		json, err := json.MarshalIndent(&p, "", "  ")
 		if err != nil {
 			log.Println("error marshaling packet:", err)
